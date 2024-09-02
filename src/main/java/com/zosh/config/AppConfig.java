@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,48 +23,41 @@ import jakarta.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 public class AppConfig {
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.sessionManagement(Management -> Management.sessionCreationPolicy(
-				SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(Authorize -> Authorize.requestMatchers("/api/admin/**").hasRole("ADMIN")
-						.requestMatchers("/api/**")
-						.authenticated().anyRequest().permitAll())
-				.addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-				.csrf(csrf -> csrf.disable())
-				.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.sessionManagement(Management -> Management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(Authorize -> Authorize
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll())
+            .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-		return http.build();
-	}
+        return http.build();
+    }
 
-	private CorsConfigurationSource corsConfigurationSource() {
-		// TODO Auto-generated method stub
-		return new CorsConfigurationSource() {
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(
+                "https://project-management-solutions.web.app",
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "https://project-management-react-plum.vercel.app"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-			@Override
-			public CorsConfiguration getCorsConfiguration(
-					HttpServletRequest request) {
-				// TODO Auto-generated method stub
-				CorsConfiguration cfg = new CorsConfiguration();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
 
-				cfg.setAllowedOrigins(Arrays.asList(
-						"https://project-management-solutions.web.app",
-						"http://localhost:3000",
-						"http://localhost:5173",
-						"https://project-management-react-plum.vercel.app"));
-				cfg.setAllowedMethods(Collections.singletonList("*"));
-				cfg.setAllowCredentials(true);
-				cfg.setAllowedHeaders(Collections.singletonList("*"));
-				cfg.setExposedHeaders(Arrays.asList("Authorization"));
-				cfg.setMaxAge(3600L);
-				return cfg;
-			}
-		};
-	}
+        return source;
+    }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
