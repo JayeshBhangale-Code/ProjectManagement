@@ -39,15 +39,11 @@ public class AppConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "https://project-management-solutions.web.app",
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "https://project-management-react-plum.vercel.app"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));  // Allow all origins
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true);  // Be cautious with allowCredentials and wildcard origins
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -55,6 +51,7 @@ public class AppConfig {
 
         return source;
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
