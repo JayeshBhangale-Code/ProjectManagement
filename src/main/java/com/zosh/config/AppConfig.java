@@ -25,10 +25,11 @@ public class AppConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .authorizeHttpRequests(authorize -> authorize
-	            .requestMatchers("/api/admin/**").hasRole("ADMIN") // Restrict to ADMIN role
-	            .requestMatchers("/api/**").authenticated() // Require authentication for /api/**
-	            .requestMatchers("/auth/**").permitAll() // Permit all requests to /auth/**
-	            .anyRequest().permitAll()) // Allow all other requests
+	            .requestMatchers(HttpMethod.OPTIONS, "/auth/**").permitAll()  // Allow OPTIONS requests for /auth/**
+	            .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Restrict to ADMIN role
+	            .requestMatchers("/api/**").authenticated()  // Require authentication for /api/**
+	            .requestMatchers("/auth/**").permitAll()  // Permit all requests to /auth/**
+	            .anyRequest().permitAll())  // Allow all other requests
 	        .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
 	        .csrf(csrf -> csrf.disable())
 	        .cors(cors -> cors.configurationSource(corsConfigurationSource()));
