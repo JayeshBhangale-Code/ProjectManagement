@@ -48,7 +48,7 @@ public class AppConfig {
 	    cfg.setAllowedOrigins(Arrays.asList(
 	            "http://localhost:3000",
 	            "http://localhost:5173",
-	            "https://project-management-solutions.web.app"));
+	            "https://project-management-solutions.firebaseapp.com"));
 	    
 	    // Allow all methods (GET, POST, OPTIONS, etc.)
 	    cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
