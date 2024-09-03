@@ -22,19 +22,19 @@ import jakarta.servlet.http.HttpServletRequest;
 public class AppConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.sessionManagement(Management -> Management.sessionCreationPolicy(
-                SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(Authorize -> Authorize.requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**")
-						.requestMatchers("/auth/**").permitAll() 
-                        .authenticated().anyRequest().permitAll())
-                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	    http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        .authorizeHttpRequests(authorize -> authorize
+	            .requestMatchers("/api/admin/**").hasRole("ADMIN") // Restrict to ADMIN role
+	            .requestMatchers("/api/**").authenticated() // Require authentication for /api/**
+	            .requestMatchers("/auth/**").permitAll() // Permit all requests to /auth/**
+	            .anyRequest().permitAll()) // Allow all other requests
+	        .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+	        .csrf(csrf -> csrf.disable())
+	        .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-        return http.build();
-    }
+	    return http.build();
+	}
 
     private CorsConfigurationSource corsConfigurationSource() {
         // TODO Auto-generated method stub
