@@ -87,7 +87,7 @@ public class AuthController {
 		AuthResponse authResponse = new AuthResponse();
 		authResponse.setJwt(token);
 		authResponse.setMessage("Register Success");
-
+		authResponse.status(true);
 		return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.OK);
 
 	}
@@ -107,6 +107,7 @@ public class AuthController {
 		AuthResponse authResponse = new AuthResponse();
 
 		authResponse.setMessage("Login Success");
+		authResponse.status(true);
 		authResponse.setJwt(token);
 
 		return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.OK);
