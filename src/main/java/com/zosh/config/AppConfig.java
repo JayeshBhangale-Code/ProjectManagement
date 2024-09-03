@@ -42,28 +42,37 @@ public class AppConfig {
 
 
 	private CorsConfigurationSource corsConfigurationSource() {
-		// TODO Auto-generated method stub
-		return new CorsConfigurationSource() {
-			
-			@Override
-			public CorsConfiguration getCorsConfiguration(
-					HttpServletRequest request) {
-				// TODO Auto-generated method stub
-				CorsConfiguration cfg = new CorsConfiguration();
-				
-				cfg.setAllowedOrigins(Arrays.asList(
-						"http://localhost:3000",
-						"http://localhost:5173",
-						"https://project-management-solutions.web.app"));
-				cfg.setAllowedMethods(Collections.singletonList("*"));
-				cfg.setAllowCredentials(true);
-				cfg.setAllowedHeaders(Collections.singletonList("*"));
-				cfg.setExposedHeaders(Arrays.asList("Authorization"));
-				cfg.setMaxAge(3600L);
-				return cfg;
-			}
-		};
+	    CorsConfiguration cfg = new CorsConfiguration();
+	    
+	    // Allow specific origins
+	    cfg.setAllowedOrigins(Arrays.asList(
+	            "http://localhost:3000",
+	            "http://localhost:5173",
+	            "https://project-management-solutions.web.app"));
+	    
+	    // Allow all methods (GET, POST, OPTIONS, etc.)
+	    cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	    
+	    // Allow credentials (cookies, authorization headers)
+	    cfg.setAllowCredentials(true);
+	    
+	    // Allow all headers
+	    cfg.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+	    
+	    // Expose specific headers
+	    cfg.setExposedHeaders(Arrays.asList("Authorization"));
+	    
+	    // Set max age of CORS preflight requests cache
+	    cfg.setMaxAge(3600L);
+	    
+	    return new CorsConfigurationSource() {
+	        @Override
+	        public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+	            return cfg;
+	        }
+	    };
 	}
+
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
