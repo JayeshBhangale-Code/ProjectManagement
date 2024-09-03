@@ -5,6 +5,8 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,8 +22,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
-
-    @Bean
+	
+	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .authorizeHttpRequests(authorize -> authorize
@@ -37,33 +39,36 @@ public class AppConfig {
 	    return http.build();
 	}
 
-    private CorsConfigurationSource corsConfigurationSource() {
-        // TODO Auto-generated method stub
-        return new CorsConfigurationSource() {
 
-            @Override
-            public CorsConfiguration getCorsConfiguration(
-                    HttpServletRequest request) {
-                // TODO Auto-generated method stub
-                CorsConfiguration cfg = new CorsConfiguration();
 
-                cfg.setAllowedOrigins(Arrays.asList(
-                        "http://localhost:3000",
-                        "http://localhost:5173",
-                        "https://project-management-solutions.web.app"));
-                cfg.setAllowedMethods(Collections.singletonList("*"));
-                cfg.setAllowCredentials(true);
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
-                cfg.setExposedHeaders(Arrays.asList("Authorization"));
-                cfg.setMaxAge(3600L);
-                return cfg;
-            }
-        };
-    }
+	private CorsConfigurationSource corsConfigurationSource() {
+		// TODO Auto-generated method stub
+		return new CorsConfigurationSource() {
+			
+			@Override
+			public CorsConfiguration getCorsConfiguration(
+					HttpServletRequest request) {
+				// TODO Auto-generated method stub
+				CorsConfiguration cfg = new CorsConfiguration();
+				
+				cfg.setAllowedOrigins(Arrays.asList(
+						"http://localhost:3000",
+						"http://localhost:5173",
+						"https://project-management-solutions.web.app"));
+				cfg.setAllowedMethods(Collections.singletonList("*"));
+				cfg.setAllowCredentials(true);
+				cfg.setAllowedHeaders(Collections.singletonList("*"));
+				cfg.setExposedHeaders(Arrays.asList("Authorization"));
+				cfg.setMaxAge(3600L);
+				return cfg;
+			}
+		};
+	}
+	
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	} 
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
 }
