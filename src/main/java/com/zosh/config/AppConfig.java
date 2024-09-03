@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
@@ -38,7 +40,6 @@ public class AppConfig {
 
 	    return http.build();
 	}
-
 
 
 	private CorsConfigurationSource corsConfigurationSource() {
@@ -65,7 +66,10 @@ public class AppConfig {
 	    // Set max age of CORS preflight requests cache
 	    cfg.setMaxAge(3600L);
 	    
-	    return request -> cfg;
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", cfg);
+	    
+	    return source;
 	}
 
 	
