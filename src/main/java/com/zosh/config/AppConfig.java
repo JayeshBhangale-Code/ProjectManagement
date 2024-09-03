@@ -65,12 +65,7 @@ public class AppConfig {
 	    // Set max age of CORS preflight requests cache
 	    cfg.setMaxAge(3600L);
 	    
-	    return new CorsConfigurationSource() {
-	        @Override
-	        public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-	            return cfg;
-	        }
-	    };
+	    return request -> cfg;
 	}
 
 	
